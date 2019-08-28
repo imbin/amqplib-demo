@@ -147,12 +147,8 @@ class Amqp extends Request
             );
 
             // consume
-            while (count($this->getChannel()->callbacks)) {
-                $this->getChannel()->wait(
-                    null,
-                    !$this->getProperty('blocking'),
-                    $this->getProperty('timeout') ? $this->getProperty('timeout') : 0
-                );
+            while ($this->getChannel()->is_consuming()) {
+                $this->getChannel()->wait();
             }
         } catch (\Exception $e) {
             if ($e instanceof Exception\Stop) {
